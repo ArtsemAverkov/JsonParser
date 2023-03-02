@@ -19,13 +19,13 @@ public class App {
         ParserI parserI = new Parser();
 
           Product product= new Product(1L, "Name", 12.1, 1L, 23.2);
-          MetaInfProduct metaInfProduct = new MetaInfProduct(1L, true, new Info("name", 1));
+          MetaInfProduct metaInfProduct = new MetaInfProduct(1L, true, new Info("name", 1L));
 
 
-        String json = parserI.generateJsonDefault(product);
-        System.out.println("json = " + json);
-        Object object = parserI.generateObjectFromJson(Product.class, json);
-        System.out.println("object = " + object);
+//        String json = parserI.generateJsonDefault(product);
+//        System.out.println("json = " + json);
+//        Object object = parserI.generateObjectFromJson(Product.class, json);
+//        System.out.println("object = " + object);
 
         String jsonM = parserI.generateJsonDefault(metaInfProduct);
         System.out.println("json = " + jsonM);

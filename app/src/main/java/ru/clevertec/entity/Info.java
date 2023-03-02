@@ -2,9 +2,9 @@ package ru.clevertec.entity;
 
 public class Info {
     private String name;
-    private int age;
+    private Long age;
 
-    public Info(String name, int age) {
+    public Info(String name, Long age) {
         this.name = name;
         this.age = age;
     }
@@ -20,11 +20,11 @@ public class Info {
         this.name = name;
     }
 
-    public int getAge() {
+    public Long getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Long age) {
         this.age = age;
     }
 

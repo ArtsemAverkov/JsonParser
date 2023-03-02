@@ -1,5 +1,6 @@
 package ru.clevertec.parser;
 
+
 import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -68,6 +69,7 @@ public class Parser implements ParserI{
             }
         }
         return jsonMap;
+
     }
 
 
@@ -86,15 +88,25 @@ public class Parser implements ParserI{
     }
 
     @Override
-    public Object generateObjectFromJson(Class<?> clazz, String json) throws Exception {
-      parseJson(json);
-
+    public  Object generateObjectFromJson(Class<?> clazz, String json) throws Exception {
+        parseJson(json);
         Object obj = clazz.newInstance();
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
             Object value = jsonMap.get(field.getName());
             if (value != null) {
-                field.set(obj, value);
+                    field.set(obj, value);
+            }else {
+                Class<?> fieldClass = field.getType();
+                Object fieldObj = fieldClass.newInstance();
+                for (Field nestedField : fieldClass.getDeclaredFields()) {
+                    nestedField.setAccessible(true);
+                    Object nestedValue = jsonMap.get(nestedField.getName());
+                    if (nestedValue != null) {
+                        nestedField.set(fieldObj, nestedValue);
+                    }
+                    field.set(obj, fieldObj);
+                }
             }
         }
         return obj;
