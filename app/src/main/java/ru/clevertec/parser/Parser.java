@@ -45,19 +45,7 @@ public class Parser implements ParserI{
                 break;
             } else if (value.startsWith("[") && value.endsWith("]")) {
             } else if (value.startsWith("\"") && value.endsWith("\"")) {
-                if (jsonMap.containsKey(key)) {
-                    Object oldValue = jsonMap.get(key);
-                    if (oldValue instanceof List) {
-                        ((List) oldValue).add(value.substring(1, value.length() - 1));
-                    } else {
-                        List<Object> newList = new ArrayList<>();
-                        newList.add(oldValue);
-                        newList.add(value.substring(1, value.length() - 1));
-                        jsonMap.put(key, newList);
-                    }
-                } else {
-                    jsonMap.put(key, value.substring(1, value.length() - 1));
-                }
+                extracted(key, value);
             } else if (value.equals("null")) {
                 jsonMap.put(key, null);
             } else if (value.equals("true") || value.equals("false")) {
@@ -73,8 +61,25 @@ public class Parser implements ParserI{
     }
 
 
+    private void extracted(String key, String value) {
+        if (jsonMap.containsKey(key)) {
+            Object oldValue = jsonMap.get(key);
+            if (oldValue instanceof List) {
+                ((List) oldValue).add(value.substring(1, value.length() - 1));
+            } else {
+                List<Object> newList = new ArrayList<>();
+                newList.add(oldValue);
+                newList.add(value.substring(1, value.length() - 1));
+                jsonMap.put(key, newList);
+            }
+        } else {
+            jsonMap.put(key, value.substring(1, value.length() - 1));
+        }
+    }
+
+
     private  String convertToJson(Object obj) throws Exception {
-        if (obj == null) {
+        if (Objects.isNull(obj)) {
             return "null";
         } else if (obj instanceof String) {
             return "\"" + obj + "\"";
@@ -94,7 +99,7 @@ public class Parser implements ParserI{
         for (Field field : clazz.getDeclaredFields()) {
             field.setAccessible(true);
             Object value = jsonMap.get(field.getName());
-            if (value != null) {
+            if (Objects.nonNull(value)) {
                     field.set(obj, value);
             }else {
                 Class<?> fieldClass = field.getType();
@@ -102,7 +107,7 @@ public class Parser implements ParserI{
                 for (Field nestedField : fieldClass.getDeclaredFields()) {
                     nestedField.setAccessible(true);
                     Object nestedValue = jsonMap.get(nestedField.getName());
-                    if (nestedValue != null) {
+                    if (Objects.nonNull(nestedValue)) {
                         nestedField.set(fieldObj, nestedValue);
                     }
                     field.set(obj, fieldObj);
